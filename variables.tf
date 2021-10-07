@@ -1,5 +1,5 @@
-variable "create_resource_group" {
-  description = "Whether to create resource group and use it for all networking resources"
+variable "create_log_ws" {
+  description = "Whether to create log analytics workspace resources"
   type        = bool
   default     = true
 }

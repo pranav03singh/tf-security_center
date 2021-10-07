@@ -1,20 +1,23 @@
-#----------------------------------------------------------
-# Generate Random Integer
-#----------------------------------------------------------
-resource "random_integer" "random_value" {
-  min = 100
-  max = 50000
+locals {
+  resource_group_name                = element(coalescelist(data.azurerm_resource_group.rgrp.*.name, azurerm_resource_group.rg.*.name, [""]), 0)
+  resource_group_location            = element(coalescelist(data.azurerm_resource_group.rgrp.*.location, azurerm_resource_group.rg.*.location, [""]), 0)
+  log_analytics_workspace_id         = element(coalescelist(data.azurerm_log_analytics_workspace.logws.*.id, azurerm_log_analytics_workspace.lgaw.*.id, [""]), 0)
+
 }
 
 
 #----------------------------------------------------------
-#  Log Analytics Data Resources
+# Resource Group, Log Analytics Data Resources
 #----------------------------------------------------------
+data "azurerm_resource_group" "rgrp" {
+  count = var.create_log_ws == false ? 1 : 0
+  name = var.resource_group_name
+}
 
 data "azurerm_log_analytics_workspace" "logws" {
-  count        = var.log_analytics_workspace_name != null ? 0 : 1
+  count = var.create_log_ws == false ? 1 : 0
   name                = var.log_analytics_workspace_name
-  resource_group_name = var.create_resource_group
+  resource_group_name = local.resource_group_name
 }
 
 #----------------------------------------------------------
@@ -23,31 +26,26 @@ data "azurerm_log_analytics_workspace" "logws" {
 
 data "azurerm_subscription" "current" {}
 
-#---------------------------------------------------------
-# Resource Group Creation or selection - Default is "false"
-#----------------------------------------------------------
 
-data "azurerm_resource_group" "rgrp" {
-  count = var.create_resource_group == false ? 1 : 0
-  name  = var.resource_group_name
-}
+#----------------------------------------------------------
+# Azure Resource Group
+#----------------------------------------------------------
 
 resource "azurerm_resource_group" "rg" {
-  count    = var.create_resource_group ? 1 : 0
-  name     = var.resource_group_name
-  location = var.resource_group_location
-  tags     =var.tags
+  count = var.create_log_ws == true ? 1 : 0
+  name     =  var.resource_group_name
+  location =  var.resource_group_location
 }
 
+#----------------------------------------------------------
+# Log analytics Workspace Resource
+#----------------------------------------------------------
 
-#----------------------------------------------------------
-# Log Analytics Workspace Resource
-#----------------------------------------------------------
-resource "azurerm_log_analytics_workspace" "main" {
-  count               = var.log_analytics_workspace_name!= null ? 0 : 1
-  name                = "logws${random_integer.random_value.result}"
-  location            = var.resource_group_location
-  resource_group_name = var.resource_group_name
+resource "azurerm_log_analytics_workspace" "lgaw" {
+  count = var.create_log_ws == true ? 1 : 0
+  name                = var.log_analytics_workspace_name
+  location            = local.resource_group_location
+  resource_group_name = local.resource_group_name
   sku                 = "PerGB2018"
   retention_in_days   = 30
 }
@@ -57,15 +55,8 @@ resource "azurerm_log_analytics_workspace" "main" {
 #----------------------------------------------------------
 
 resource "azurerm_security_center_workspace" "main" {
-  count        = var.log_analytics_workspace_name != null ? 0 : 1
   scope        = var.scope_resource_id == null ? data.azurerm_subscription.current.id : var.scope_resource_id
-  workspace_id = azurerm_log_analytics_workspace.main[count.index].id
-}
-
-resource "azurerm_security_center_workspace" "main2" {
-  count        = var.log_analytics_workspace_name != null ? 1 : 0
-  scope        = var.scope_resource_id == null ? data.azurerm_subscription.current.id : var.scope_resource_id
-  workspace_id = data.azurerm_log_analytics_workspace.logws[count.index].id
+  workspace_id = local.log_analytics_workspace_id
 }
 
 #----------------------------------------------------------
