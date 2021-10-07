@@ -59,8 +59,15 @@ resource "azurerm_log_analytics_workspace" "main" {
 #----------------------------------------------------------
 
 resource "azurerm_security_center_workspace" "main" {
+  count               = var.log_analytics_workspace_name ? 0 : 1
   scope        = var.scope_resource_id == null ? data.azurerm_subscription.current.id : var.scope_resource_id
   workspace_id = azurerm_log_analytics_workspace.main[count.index].id
+}
+
+resource "azurerm_security_center_workspace" "main2" {
+  count        = var.log_analytics_workspace_name ? 1 : 0
+  scope        = var.scope_resource_id == null ? data.azurerm_subscription.current.id : var.scope_resource_id
+  workspace_id = data.azurerm_log_analytics_workspace.logws.id
 }
 
 #----------------------------------------------------------
