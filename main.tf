@@ -12,6 +12,7 @@ resource "random_integer" "random_value" {
 #----------------------------------------------------------
 
 data "azurerm_log_analytics_workspace" "logws" {
+  count        = var.log_analytics_workspace_name != null ? 0 : 1
   name                = var.log_analytics_workspace_name
   resource_group_name = var.create_resource_group
 }
