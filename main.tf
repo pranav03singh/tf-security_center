@@ -48,7 +48,7 @@ resource "azurerm_resource_group" "rg" {
 resource "azurerm_log_analytics_workspace" "main" {
   count               = var.log_analytics_workspace_name ? 0 : 1
   name                = "log-ws-"+random_integer.random_value
-  location            = var.rg_location
+  location            = var.resource_group_location
   resource_group_name = var.resource_group_name
   sku                 = "PerGB2018"
   retention_in_days   = 30
