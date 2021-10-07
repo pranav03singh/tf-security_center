@@ -8,15 +8,12 @@ resource "random_integer" "random_value" {
 
 
 #----------------------------------------------------------
-# Resource Group, Log Analytics Data Resources
+#  Log Analytics Data Resources
 #----------------------------------------------------------
-data "azurerm_resource_group" "rg" {
-  name = var.resource_group_name
-}
 
 data "azurerm_log_analytics_workspace" "logws" {
   name                = var.log_analytics_workspace_name
-  resource_group_name = data.azurerm_resource_group.rg.name
+  resource_group_name = var.create_resource_group
 }
 
 #----------------------------------------------------------
@@ -59,7 +56,7 @@ resource "azurerm_log_analytics_workspace" "main" {
 #----------------------------------------------------------
 
 resource "azurerm_security_center_workspace" "main" {
-  count               = var.log_analytics_workspace_name != null ? 0 : 1
+  count        = var.log_analytics_workspace_name != null ? 0 : 1
   scope        = var.scope_resource_id == null ? data.azurerm_subscription.current.id : var.scope_resource_id
   workspace_id = azurerm_log_analytics_workspace.main[count.index].id
 }
