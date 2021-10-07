@@ -26,6 +26,7 @@ variable "security_center_subscription_pricing" {
 }
 
 variable "resource_type" {
+  type        = list(string)
   description = "The resource type this setting affects"
   default     = ["VirtualMachines"]
 }
