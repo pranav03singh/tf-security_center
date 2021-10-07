@@ -60,7 +60,7 @@ resource "azurerm_log_analytics_workspace" "main" {
 
 resource "azurerm_security_center_workspace" "main" {
   scope        = var.scope_resource_id == null ? data.azurerm_subscription.current.id : var.scope_resource_id
-  workspace_id = azurerm_log_analytics_workspace.main.id
+  workspace_id = azurerm_log_analytics_workspace.main[count.index].id
 }
 
 #----------------------------------------------------------
