@@ -58,5 +58,5 @@ variable "enable_security_center_auto_provisioning" {
 
 variable "tags" {
   description = "Tagging"
-  type     = string
+  type     = map(string)
 }
