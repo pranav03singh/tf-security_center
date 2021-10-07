@@ -9,7 +9,7 @@ Security Center collects data from the Azure virtual machines (VMs), virtual mac
 ```hcl
 module "security-center" {
   source  = "git::https://github.com/pranav03singh/tf-security_center.git"
-  version = "1.1.0"
+
 
 
   # Resource Group, location, log analytics details
