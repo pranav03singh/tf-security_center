@@ -38,7 +38,7 @@ resource "azurerm_resource_group" "rg" {
   count    = var.create_resource_group ? 1 : 0
   name     = var.resource_group_name
   location = var.resource_group_location
-  tags     = merge({ "Name" = format("%s", var.resource_group_name) }, var.tags, )
+  tags     =var.tags
 }
 
 
@@ -67,7 +67,7 @@ resource "azurerm_security_center_workspace" "main" {
 resource "azurerm_security_center_workspace" "main2" {
   count        = var.log_analytics_workspace_name ? 1 : 0
   scope        = var.scope_resource_id == null ? data.azurerm_subscription.current.id : var.scope_resource_id
-  workspace_id = data.azurerm_log_analytics_workspace.logws.id
+  workspace_id = data.azurerm_log_analytics_workspace.logws[count.index].id
 }
 
 #----------------------------------------------------------

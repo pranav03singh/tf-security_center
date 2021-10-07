@@ -55,3 +55,8 @@ variable "enable_security_center_auto_provisioning" {
   description = "Should the security agent be automatically provisioned on Virtual Machines in this subscription?"
   default     = "Off"
 }
+
+variable "tags" {
+  description = "Tagging"
+  type     = string
+}
