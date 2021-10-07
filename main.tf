@@ -66,7 +66,7 @@ resource "azurerm_security_center_workspace" "main" {
 resource "azurerm_security_center_subscription_pricing" "main" {
   for_each      = var.resource_type
   tier          = var.security_center_subscription_pricing
-  resource_type = each.key
+  resource_type = each.value
 }
 
 #----------------------------------------------------------
