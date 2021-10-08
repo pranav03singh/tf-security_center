@@ -13,6 +13,7 @@ module "security-center" {
 
 
   # Resource Group, location, log analytics details
+  create_log_ws                = true
   resource_group_name          = "rg-shared-westeurope-01"
   log_analytics_workspace_name = "loganalytics-we-sharedtest2"
 
@@ -33,6 +34,9 @@ module "security-center" {
   }
 }
 ```
+## Create Log Analytics Workspace
+
+This module support option to provision Log Analytics Workspace Seperately. Use `create_log_ws`  to use this feature.
 
 ## Security Center API Settings
 
@@ -63,6 +67,7 @@ azurerm | >= 2.59.0
 
 Name | Description | Type | Default
 ---- | ----------- | ---- | -------
+`create_log_ws` | Whether to create Log Analytics WOrkspacece | bool | `true` 
 `resource_group_name` | The name of the resource group in which resources are created | string | `""`
 `log_analytics_workspace_name`|The name of log analytics workspace name|string|`""`
 `security_center_contacts`|Manages the subscription's Security Center Contact|object|{}
