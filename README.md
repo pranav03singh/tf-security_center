@@ -89,7 +89,7 @@ Name | Description
 
 ## Authors
 
-Originally created by [Pranav Singh](mailto:pranav.singh@optum.com)
+Maintainer [Pranav Singh](mailto:pranav.singh@optum.com)
 
 ## Other resources
 
